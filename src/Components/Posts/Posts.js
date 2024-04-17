@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from 'react-router-dom';
 import { FirebaseContextHook } from "../../store/Context";
+import { ProductInfoContextHook } from "../../store/ProductInfoContext";
 import Heart from "../../assets/Heart";
 import "./Post.css";
 
 function Posts() {
   const { firebase } = FirebaseContextHook();
   const [products, setProducts] = useState([]);
+  const { setProductDetails } = ProductInfoContextHook();
+  const history = useHistory();
+
   useEffect(() => {
     firebase
       .firestore()
@@ -31,8 +36,15 @@ function Posts() {
         </div>
         <div className="cards">
           {products.map((product) => {
-            return (   
-              <div className="card" key={product.id}>
+            return (
+              <div
+                className="card"
+                key={product.id}
+                onClick={() => {
+                  setProductDetails(product);
+                  history.push('/view');
+                }}
+              >
                 <div className="favorite">
                   <Heart></Heart>
                 </div>
@@ -48,7 +60,7 @@ function Posts() {
                   {/* <span>{product.createdAt}</span> */}
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       </div>
